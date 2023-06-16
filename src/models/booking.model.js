@@ -26,6 +26,10 @@ export const Booking = sequelize.define('booking', {
         type: DataTypes.DATE,
         allowNull: false
     },
+    numberOfNights: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
     totalPrice: {
         type: DataTypes.FLOAT,
         allowNull: false

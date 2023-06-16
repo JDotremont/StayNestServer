@@ -42,6 +42,11 @@ export const Property = sequelize.define('property', {
         type: DataTypes.FLOAT,
         allowNull: false,
     },
+    cleaningFee: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+        defaultValue: 40
+    },
     photos: {
         type: DataTypes.STRING,
         allowNull: true

@@ -1,4 +1,7 @@
 import { Property } from "../models/property.model.js";
+import { Availability } from "../models/availability.model.js";
+import { Op } from "sequelize";
+import moment from "moment/moment.js";
 
 const createProperty = async (req, res) => {
     try {
@@ -74,4 +77,41 @@ const deleteProperty = async (req, res) => {
     }
 }
 
-export const propertyController = { createProperty, getProperties, getPropertyById, updateProperty, deleteProperty };
+const searchProperty = async (req, res) => {
+    try {
+        console.log('req.query', req.query);
+
+        const startDate = moment(req.query.startDate, "YYYY-MM-DD").toDate();
+        const endDate = moment(req.query.endDate, "YYYY-MM-DD").toDate();
+
+        console.log('Dates', startDate, endDate);
+
+        const properties = await Property.findAll({
+            include: [{
+                model: Availability,
+                where: {
+                    date: {
+                        [Op.between]: [startDate, endDate]
+                    },
+                    isAvailable: true
+                }
+            }],
+            where: {
+                city: req.query.city,
+                guests: Number(req.query.guests),
+                country: req.query.country
+            }
+        });
+        if (!req.body.city || !req.body.country || !req.body.startDate || !req.body.endDate || !req.body.guests) {
+            return res.status(400).json({ error: "Missing required fields" });
+        }        
+        res.json(properties);
+    } catch (error) {
+        console.error(error.stack);
+        return res.status(500).json({ error: error.message });
+    }    
+}
+
+
+
+export const propertyController = { createProperty, getProperties, getPropertyById, updateProperty, deleteProperty, searchProperty };

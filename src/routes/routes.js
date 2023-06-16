@@ -75,3 +75,7 @@ routes.route('/message/:id')
 // Login route
 routes.route('/login')
     .post(validationMiddleware(loginBodySchema), loginController.login);
+
+// search route
+routes.route('/search')
+    .get(propertyController.searchProperty);

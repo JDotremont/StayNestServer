@@ -6,8 +6,15 @@ const createBooking = async (req, res) => {
         ...req.body,
         image: req.file ? req.file.filname : null,
         };
+        const startDate = new Date(userData.startDate);
+        const endDate = new Date(userData.endDate);
         const booking = await Booking.create(userData);
         res.status(201).json(booking);
+        for (let d = start; d <= end; d.setDate(d.getDate() + 1))
+            await Availability.update(
+                { available: false },
+                { where: { propertyId: userData.propertyId, date: d } }
+            );
     } catch (error) {
         return res.status(500).json({ error: error.message });  
     }
